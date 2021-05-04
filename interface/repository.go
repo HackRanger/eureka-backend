@@ -229,3 +229,23 @@ func (dbDieOrder *DbDieOrder) GetAllDieOrders() ([]domain.DieOrderLine, error) {
 
 	return allDieOrders, nil
 }
+
+func (dbDieOrder *DbDieOrder) GenerateLotNumber() (int, error) {
+	rows, err := dbDieOrder.db.Query("select lotnumber from dieorder order by sl desc limit 1")
+	if err != nil {
+		log.Fatal(err)
+		return -1, err
+	}
+
+	defer rows.Close()
+	var lotNumber int
+	for rows.Next() {
+
+		err = rows.Scan(&lotNumber)
+		if err != nil {
+			log.Fatal(err)
+			return -1, err
+		}
+	}
+	return lotNumber, nil
+}

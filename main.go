@@ -65,6 +65,7 @@ func main() {
 	dieOrderHadler.DieOrderServiceInteractor = doi
 	dieMgmt.POST("/dieOrder", dieOrderHadler.CreateDieOrder)
 	dieMgmt.GET("/dieOrder", dieOrderHadler.GetAllDieOrders)
+	dieMgmt.GET("/dieOrderGenerateLotNo", dieOrderHadler.GenerateLotNumber)
 
 	r.Run("0.0.0.0:8080")
 

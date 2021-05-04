@@ -17,6 +17,7 @@ func (service *DieRegistryService) GetAllDie() ([]domain.Die, error) {
 type DieOrderRepository interface {
 	CreateDieOrder([]domain.DieOrderLine) error
 	GetAllDieOrders() ([]domain.DieOrderLine, error)
+	GenerateLotNumber() (int, error)
 }
 
 type DieOrderService struct {
@@ -29,4 +30,12 @@ func (service *DieOrderService) CreateDieOrder(orders []domain.DieOrderLine) err
 
 func (service *DieOrderService) GetAllDieOrders() ([]domain.DieOrderLine, error) {
 	return service.DieOrderRepo.GetAllDieOrders()
+}
+
+func (service *DieOrderService) GenerateLotNumber() (int, error) {
+	lotNo, err := service.DieOrderRepo.GenerateLotNumber()
+	if err != nil {
+		return lotNo, err
+	}
+	return lotNo + 1, err
 }

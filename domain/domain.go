@@ -27,6 +27,7 @@ type Die struct {
 type DieOrderRepository interface {
 	CreateDieOrder(orders []DieOrderLine) error
 	GetAllDieOrders() ([]DieOrderLine, error)
+	GenerateLotNumber() (int, error)
 }
 
 // Die : Domain entity representing a Die in aluminum extrusion

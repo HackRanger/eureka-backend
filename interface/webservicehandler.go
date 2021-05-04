@@ -29,6 +29,7 @@ func (handler *DieHandler) GetAllDie(c *gin.Context) {
 type DieOrderServiceInteractor interface {
 	CreateDieOrder([]domain.DieOrderLine) error
 	GetAllDieOrders() ([]domain.DieOrderLine, error)
+	GenerateLotNumber() (int, error)
 }
 
 type DieOrderHandler struct {
@@ -64,4 +65,13 @@ func (handler *DieOrderHandler) GetAllDieOrders(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": allDieOrders})
+}
+
+func (handler *DieOrderHandler) GenerateLotNumber(c *gin.Context) {
+	lotNumber, err := handler.DieOrderServiceInteractor.GenerateLotNumber()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": lotNumber})
 }
