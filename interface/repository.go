@@ -127,5 +127,12 @@ func (dbDieOrder *DbDieOrder) CreateDieOrder(orderLines []domain.DieOrderLine) e
 		}
 	}
 
+	err = tx.Commit()
+	if err != nil {
+		// Incase we find any error in the query execution, rollback the transaction
+		tx.Rollback()
+		return err
+	}
+
 	return nil
 }

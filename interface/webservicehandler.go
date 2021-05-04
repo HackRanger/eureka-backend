@@ -26,19 +26,22 @@ func (handler *DieHandler) GetAllDie(c *gin.Context) {
 }
 
 type DieOrderServiceInteractor interface {
-	CreateDieOrder(domain.DieOrderLine) error
+	CreateDieOrder([]domain.DieOrderLine) error
 }
 
 type DieOrderHandler struct {
 	DieOrderServiceInteractor DieOrderServiceInteractor
 }
 
-func (handler *DieOrderHandler) CreateDieOrder(c *gin.Context) {
+type Orders struct {
+	AllOrderLines []domain.DieOrderLine `json:"orders" binding:"required"`
+}
 
-	err := handler.DieOrderServiceInteractor.CreateDieOrder()
-	if err != nil {
+func (handler *DieOrderHandler) CreateDieOrder(c *gin.Context) {
+	var o Orders
+	if err := c.ShouldBindJSON(&o); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": allDie})
+	c.JSON(http.StatusCreated, nil)
 }

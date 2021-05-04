@@ -59,6 +59,12 @@ func main() {
 
 	dieMgmt.GET("/", webServiceHandler.GetAllDie)
 
+	doi := new(usecases.DieOrderService)
+	doi.DieOrderRepo = interfaces.NewDbDieOrder(db)
+	dieOrderHadler := interfaces.DieOrderHandler{}
+	dieOrderHadler.DieOrderServiceInteractor = doi
+	dieMgmt.POST("/dieOrder", dieOrderHadler.CreateDieOrder)
+
 	r.Run("0.0.0.0:8080")
 
 	log.Println("Shutdown: Eureka Application")
