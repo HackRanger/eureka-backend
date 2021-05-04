@@ -23,5 +23,4 @@ func (handler *DieHandler) GetAllDie(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": allDie})
-	return
 }

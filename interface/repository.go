@@ -66,6 +66,7 @@ func (dbDie *DbDie) GetAllDie() ([]domain.Die, error) {
 			BolsterNo:  bolsterNo,
 			OrderDate:  oDate,
 			LandedDate: lDate,
+			Price:      price,
 		}
 		allDie = append(allDie, die)
 	}
