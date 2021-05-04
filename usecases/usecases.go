@@ -16,6 +16,7 @@ func (service *DieRegistryService) GetAllDie() ([]domain.Die, error) {
 
 type DieOrderRepository interface {
 	CreateDieOrder([]domain.DieOrderLine) error
+	GetAllDieOrders() ([]domain.DieOrderLine, error)
 }
 
 type DieOrderService struct {
@@ -23,5 +24,9 @@ type DieOrderService struct {
 }
 
 func (service *DieOrderService) CreateDieOrder(orders []domain.DieOrderLine) error {
-	return service.CreateDieOrder(orders)
+	return service.DieOrderRepo.CreateDieOrder(orders)
+}
+
+func (service *DieOrderService) GetAllDieOrders() ([]domain.DieOrderLine, error) {
+	return service.DieOrderRepo.GetAllDieOrders()
 }

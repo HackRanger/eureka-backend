@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/eureka/domain"
@@ -27,6 +28,7 @@ func (handler *DieHandler) GetAllDie(c *gin.Context) {
 
 type DieOrderServiceInteractor interface {
 	CreateDieOrder([]domain.DieOrderLine) error
+	GetAllDieOrders() ([]domain.DieOrderLine, error)
 }
 
 type DieOrderHandler struct {
@@ -39,9 +41,27 @@ type Orders struct {
 
 func (handler *DieOrderHandler) CreateDieOrder(c *gin.Context) {
 	var o Orders
+
 	if err := c.ShouldBindJSON(&o); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	err := handler.DieOrderServiceInteractor.CreateDieOrder(o.AllOrderLines)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusCreated, nil)
+}
+
+func (handler *DieOrderHandler) GetAllDieOrders(c *gin.Context) {
+	allDieOrders, err := handler.DieOrderServiceInteractor.GetAllDieOrders()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": allDieOrders})
 }

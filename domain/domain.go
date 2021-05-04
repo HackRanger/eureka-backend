@@ -26,6 +26,7 @@ type Die struct {
 // DieMasterRepository : Operations on DieMaster entity
 type DieOrderRepository interface {
 	CreateDieOrder(orders []DieOrderLine) error
+	GetAllDieOrders() ([]DieOrderLine, error)
 }
 
 // Die : Domain entity representing a Die in aluminum extrusion
@@ -51,4 +52,5 @@ type DieOrderLine struct {
 	CompanyName       string
 	Email             string
 	Address           string
+	Date              time.Time
 }

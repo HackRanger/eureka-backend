@@ -64,6 +64,7 @@ func main() {
 	dieOrderHadler := interfaces.DieOrderHandler{}
 	dieOrderHadler.DieOrderServiceInteractor = doi
 	dieMgmt.POST("/dieOrder", dieOrderHadler.CreateDieOrder)
+	dieMgmt.GET("/dieOrder", dieOrderHadler.GetAllDieOrders)
 
 	r.Run("0.0.0.0:8080")
 

@@ -99,11 +99,13 @@ func (dbDieOrder *DbDieOrder) CreateDieOrder(orderLines []domain.DieOrderLine) e
 		_, err = tx.ExecContext(ctx, `INSERT INTO dieorder(lotnumber, sl, bolsternumber, 
 					firstextreqweight, solidleadpi, soliddiepi, solidbacker, portholedie,
 					portholemandrel, portholebacker, description, size, kgs, sup, price,
-					remarks, dienumber, cavnumber, companyname, email, address)
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+					remarks, dienumber, cavnumber, companyname, email, address,orderDate)
+					VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21,$22)`,
 			order.LotNumber,
 			order.Sl,
-			order.BolsterNumber, order.FirstExtReqWeight, order.SolidLeadPI,
+			order.BolsterNumber,
+			order.FirstExtReqWeight,
+			order.SolidLeadPI,
 			order.SolidDiePI,
 			order.SolidBacker,
 			order.PortholeDie,
@@ -119,7 +121,8 @@ func (dbDieOrder *DbDieOrder) CreateDieOrder(orderLines []domain.DieOrderLine) e
 			order.CavNumber,
 			order.CompanyName,
 			order.Email,
-			order.Address)
+			order.Address,
+			order.Date)
 		if err != nil {
 			// Incase we find any error in the query execution, rollback the transaction
 			tx.Rollback()
@@ -135,4 +138,94 @@ func (dbDieOrder *DbDieOrder) CreateDieOrder(orderLines []domain.DieOrderLine) e
 	}
 
 	return nil
+}
+
+func (dbDieOrder *DbDieOrder) GetAllDieOrders() ([]domain.DieOrderLine, error) {
+	var allDieOrders []domain.DieOrderLine
+	rows, err := dbDieOrder.db.Query("select * from dieorder")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var (
+			LotNumber         int
+			Sl                int
+			BolsterNumber     string
+			FirstExtReqWeight string
+			SolidLeadPI       bool
+			SolidDiePI        bool
+			SolidBacker       bool
+			PortholeDie       bool
+			PortholeMandrel   bool
+			PortholeBacker    bool
+			Description       string
+			Size              string
+			Kgs               string
+			Sup               string
+			Price             string
+			Remarks           string
+			DieNumber         string
+			CavNumber         int
+			CompanyName       string
+			Email             string
+			Address           string
+			Date              time.Time
+		)
+		err = rows.Scan(&LotNumber,
+			&Sl,
+			&BolsterNumber, &FirstExtReqWeight, &SolidLeadPI,
+			&SolidDiePI,
+			&SolidBacker,
+			&PortholeDie,
+			&PortholeMandrel,
+			&PortholeBacker,
+			&Description,
+			&Size,
+			&Kgs,
+			&Sup,
+			&Price,
+			&Remarks,
+			&DieNumber,
+			&CavNumber,
+			&CompanyName,
+			&Email,
+			&Address,
+			&Date)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		dieOrder := domain.DieOrderLine{
+			Sl:                Sl,
+			LotNumber:         LotNumber,
+			BolsterNumber:     BolsterNumber,
+			FirstExtReqWeight: FirstExtReqWeight,
+			SolidLeadPI:       SolidLeadPI,
+			SolidDiePI:        SolidDiePI,
+			SolidBacker:       SolidBacker,
+			PortholeDie:       PortholeDie,
+			PortholeMandrel:   PortholeMandrel,
+			PortholeBacker:    PortholeBacker,
+			Description:       Description,
+			Size:              Size,
+			Kgs:               Kgs,
+			Sup:               Sup,
+			Price:             Price,
+			Remarks:           Remarks,
+			DieNumber:         DieNumber,
+			CavNumber:         CavNumber,
+			CompanyName:       CompanyName,
+			Email:             Email,
+			Address:           Address,
+			Date:              Date,
+		}
+		allDieOrders = append(allDieOrders, dieOrder)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return allDieOrders, nil
 }

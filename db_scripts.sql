@@ -70,6 +70,7 @@ CREATE TABLE dieOrder
  companyName       text ,
  email             text ,
  address           text ,
+ orderDate     date NOT NULL,
  CONSTRAINT PK_dietable PRIMARY KEY ( lotNumber, sl )
 );
 
